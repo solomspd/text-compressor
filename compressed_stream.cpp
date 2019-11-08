@@ -4,11 +4,12 @@
 
 #include "compressed_stream.h"
 
-compressed_stream::compressed_stream(){
+compressed_stream::compressed_stream() {
     char *new_char = new char;
     *new_char = int(0);
     top = new_char;
     tot_length = 0;
+    stream.push_back(top);
 }
 
 compressed_stream::~compressed_stream() {
@@ -24,7 +25,7 @@ bool compressed_stream::add(int compressed_char, int length) {
     tot_length += length;
     while (length > 0) {
         if (remaining_in_byte == 0) {
-            char* new_char = new char;
+            char *new_char = new char;
             *new_char = int(0);
             stream.push_back(new_char);
             top = new_char;
@@ -42,10 +43,14 @@ bool compressed_stream::clear() {
     return ret;
 }
 
-bool compressed_stream::is_empty() {
-    return stream.empty();
-}
+bool compressed_stream::is_empty() { return stream.empty(); }
 
-unsigned long long compressed_stream::get_size() {
-    return stream.size();
+unsigned long long compressed_stream::get_size() { return stream.size(); }
+bool compressed_stream::pop_front(char &in) {
+
+	in = *stream[0];
+	delete stream[0];
+	stream.erase(stream.begin());
+
+	return stream.empty();
 }
