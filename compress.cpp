@@ -11,7 +11,7 @@
 
 bool compare_tally(const std::pair<unsigned long long, char> &lhs, const std::pair<unsigned long long, char> &rhs) { return lhs.first > rhs.first; }
 
-class compare_pq
+class compare_pq // TODO replace with in class comparison
 {
 	public:
 		bool operator() (huff_tree *lhs, huff_tree *rhs)
@@ -80,7 +80,7 @@ void compress::build_tree() {
 	tree = tree_builder.top();
 	tree_builder.pop();
 
-//	compress_tree(tree);
+	compress_tree(tree);
 
 	short_hand(tree, 0, 0);
 
@@ -112,15 +112,13 @@ bool compress::create_stream(const std::string &in_file) {
 void compress::compress_tree(huff_tree *in) {
 
 	if (in->get_val() != inside) {
-		out_stream.add_char(1, 1);
+		out_stream.add_bit(1);
 		out_stream.add_char(in->get_val(), cell_size);
 	} else {
-		out_stream.add_char(0, 1);
+		out_stream.add_bit(0);
+		if (in->get_right() != nullptr) { compress_tree(in->get_right()); }
+		if (in->get_left() != nullptr) { compress_tree(in->get_left()); }
 	}
-
-	if (in->get_right() != nullptr) { compress_tree(in->get_right()); }
-	if (in->get_left() != nullptr) { compress_tree(in->get_left()); }
-
 }
 
 bool compress::create_file(const std::string &in_file) {

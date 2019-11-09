@@ -28,6 +28,8 @@ class huff_tree {
         huff_tree *get_right();
         huff_tree *get_left();
         int combine(huff_tree *right, huff_tree *left);
+        void bind_right(huff_tree *in);
+        void bind_left(huff_tree *in);
 };
 
 

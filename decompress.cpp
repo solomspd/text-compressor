@@ -6,7 +6,7 @@
 #include "compressed_stream.h"
 
 decompress::decompress() {
-	pos = 0;
+	pos = cell_size + 1;
 }
 
 decompress::decompress(const std::string &in_file) {
@@ -22,27 +22,27 @@ bool decompress::open_file(const std::string &in_file) {
 	return in_stream.is_open();
 }
 
-void decompress::rebuild_tree(huff_tree *in) {
-	if (get_bit()) { in = new huff_tree(get_char()); }
-	bool still_can;
-	if (still_can) {
-		rebuild_tree(in->get_right());
-		rebuild_tree(in->get_left());
-		in = new huff_tree(-1);
+huff_tree *decompress::rebuild_tree() {
+	if (get_bit()) {
+		return new huff_tree(get_char());
+	}
+	else {
+		huff_tree *new_node = new huff_tree(0);
+		new_node->bind_right(rebuild_tree());
+		new_node->bind_left(rebuild_tree());
+		return new_node;
 	}
 }
 
-void decompress::decompress_tree() {
-
-}
-
 void decompress::decompress_txt(const std::string &out_file) {
+	tree = rebuild_tree();
+
 	std::ofstream out_stream(out_file.c_str());
 	while (!in_stream.eof()) {
 		unsigned int cur;
 		char res;
 		huff_tree *cursor = tree;
-		while (cursor->get_val() != 0) {
+		while (cursor->get_val() == inside) {
 			if (get_bit()) {
 				cursor = cursor->get_right();
 			} else {
@@ -52,18 +52,19 @@ void decompress::decompress_txt(const std::string &out_file) {
 		out_stream.put(cursor->get_val());
 	}
 	out_stream.close();
+	in_stream.close();
 }
 
 char decompress::get_char() {
 	char ret = int(0);
-	for (int i = cell_size - 1; i >= 0; i--) {
+	for (int i = cell_size; i >= 0; i--) {
 		ret |= get_bit() << i;
 	}
 	return ret;
 }
 
 bool decompress::get_bit() {
-	if (pos == cell_size) {
+	if (pos == cell_size + 1) {
 		pos = 0;
 		in_stream.get(cur_char);
 	}

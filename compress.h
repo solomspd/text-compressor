@@ -25,11 +25,11 @@ class compress {
 		compress();
 		compress(const std::string &in_file);
 		~compress();
-		bool set_up(const std::string &in_file); //// consider finding frequency of more than just letters such as common suffixes "tion" and "er"
+		bool set_up(const std::string &in_file); // TODO consider finding frequency of more than just letters such as common suffixes "tion" and "er"
 		void short_hand(huff_tree *in, unsigned int depth, unsigned int node);
-		void build_tree(); //// consider adding nodes for multiplications of characters for more effieicient recurring characters
+		void build_tree(); // TODO consider adding nodes for multiplications of characters for more effieicient recurring characters
 		bool create_stream(const std::string &in_file);
-		void compress_tree(huff_tree *in); //// try to make constant and become reference
+		void compress_tree(huff_tree *in); // TODO try to make constant and become reference
 		bool create_file(const std::string &in_file);
 };
 

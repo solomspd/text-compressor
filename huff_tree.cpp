@@ -56,3 +56,7 @@ int huff_tree::combine(huff_tree *inr, huff_tree *inl) {
 	left = inl;
 	freq = right->freq + left->freq;
 }
+
+void huff_tree::bind_right(huff_tree *in) { right = in; }
+
+void huff_tree::bind_left(huff_tree *in) { left = in; }
