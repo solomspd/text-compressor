@@ -6,7 +6,6 @@
 
 huff_tree::huff_tree() {
 	freq = 0;
-
 	val = 0;
 	sz = 0;
 	right = nullptr;
@@ -52,8 +51,8 @@ huff_tree *huff_tree::get_right() { return right; }
 huff_tree *huff_tree::get_left() { return left; }
 
 int huff_tree::combine(huff_tree *inr, huff_tree *inl) {
-	freq = right->freq + left->freq;
 	val = inside;
 	right = inr;
 	left = inl;
+	freq = right->freq + left->freq;
 }

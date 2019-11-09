@@ -7,18 +7,19 @@
 
 #include <vector>
 
-const int cell_size = 8;
+const int cell_size = 7;
 
 class compressed_stream {
 	private:
 		std::vector<char*> stream;
 		char *top;
-		unsigned long long tot_length;
+		unsigned short pos;
 
 public:
     compressed_stream();
     ~compressed_stream();
-    bool add(int compressed_char, int length);
+    void add_char(int compressed_char, int length);
+    void add_bit(bool in);
     bool pop_front(char &in);
     bool is_empty();
     bool clear();

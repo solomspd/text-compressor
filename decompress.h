@@ -25,9 +25,10 @@ class decompress {
 		~decompress();
 		bool open_file(const std::string &in_file);
 		void rebuild_tree(huff_tree *in);
-		char get_equi(char);
 		char get_char();
-		char get_bit();
+		bool get_bit();
+		void decompress_txt(const std::string &out_file);
+		void decompress_tree();
 };
 
 

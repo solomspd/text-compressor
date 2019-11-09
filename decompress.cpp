@@ -6,7 +6,7 @@
 #include "compressed_stream.h"
 
 decompress::decompress() {
-
+	pos = 0;
 }
 
 decompress::decompress(const std::string &in_file) {
@@ -32,20 +32,40 @@ void decompress::rebuild_tree(huff_tree *in) {
 	}
 }
 
-char decompress::get_equi(char) {
+void decompress::decompress_tree() {
 
-	return 0;
+}
+
+void decompress::decompress_txt(const std::string &out_file) {
+	std::ofstream out_stream(out_file.c_str());
+	while (!in_stream.eof()) {
+		unsigned int cur;
+		char res;
+		huff_tree *cursor = tree;
+		while (cursor->get_val() != 0) {
+			if (get_bit()) {
+				cursor = cursor->get_right();
+			} else {
+				cursor = cursor->get_left();
+			}
+		}
+		out_stream.put(cursor->get_val());
+	}
+	out_stream.close();
 }
 
 char decompress::get_char() {
-	if (!pos) {
-		in_stream.get(cur_char);
-		return cur_char;
+	char ret = int(0);
+	for (int i = cell_size - 1; i >= 0; i--) {
+		ret |= get_bit() << i;
 	}
-
-
+	return ret;
 }
 
-char decompress::get_bit() {
-
+bool decompress::get_bit() {
+	if (pos == cell_size) {
+		pos = 0;
+		in_stream.get(cur_char);
+	}
+	return (cur_char >> (cell_size - pos++)) & 1;
 }

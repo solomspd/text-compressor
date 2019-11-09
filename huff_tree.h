@@ -5,12 +5,12 @@
 #ifndef BONUS_HUFF_TREE_H
 #define BONUS_HUFF_TREE_H
 
-const int inside = -1;
+const int inside = 0;
 
 class huff_tree {
     private:
         unsigned long long freq;
-        int val;
+        char val;
         int sz;
         huff_tree *right, *left;
 
@@ -28,7 +28,6 @@ class huff_tree {
         huff_tree *get_right();
         huff_tree *get_left();
         int combine(huff_tree *right, huff_tree *left);
-
 };
 
 

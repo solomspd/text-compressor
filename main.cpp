@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 	compress compressor;
 
 	std::string in_file = "test.txt";
+	std::string out_file = "compressed.txt";
 
 	mode_sym = tolower(mode_sym);
 
@@ -31,14 +32,19 @@ int main(int argc, char **argv) {
 			if (!compressor.set_up(in_file)) { return cannot_open_file; }
 			compressor.build_tree();
 			if (!compressor.create_stream(in_file)) { return cannot_open_file; }
-			if (!compressor.create_file(in_file)) { return cannot_create_file; }
+			if (!compressor.create_file(out_file)) { return cannot_create_file; }
+			break;
 		}
 
 		case decompress_sym: {
 
+			break;
 		}
 
-		default: { std::cout << "error 101 (invalid arguments)"; }
+		default: {
+			std::cout << "error 101 (invalid arguments)";
+			break;
+		}
 	}
 
 	return success;

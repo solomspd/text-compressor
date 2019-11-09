@@ -5,8 +5,21 @@
 #include <fstream>
 #include <algorithm>
 #include <queue>
+#include <functional>
 
 #include "compress.h"
+
+bool compare_tally(const std::pair<unsigned long long, char> &lhs, const std::pair<unsigned long long, char> &rhs) { return lhs.first > rhs.first; }
+
+class compare_pq
+{
+	public:
+		bool operator() (huff_tree *lhs, huff_tree *rhs)
+		{
+			bool ret = lhs->get_freq() > rhs->get_freq();
+			return ret;
+		}
+};
 
 compress::compress() {
 	for (int i = 0; i < char_count; i++) {
@@ -38,13 +51,13 @@ bool compress::set_up(const std::string &in_file) {
 
 	in.close();
 
-	std::sort(std::begin(tally), std::end(tally));
+	std::sort(std::begin(tally), std::end(tally), compare_tally);
 
 	return true;
 }
 
 void compress::build_tree() {
-	std::priority_queue<huff_tree *> tree_builder;
+	std::priority_queue<huff_tree *, std::vector<huff_tree *>, compare_pq> tree_builder;
 
 	for (int i = 0; tally[i].first > 0 && i < char_count; i++) {
 		auto *new_node = new huff_tree;
@@ -67,14 +80,14 @@ void compress::build_tree() {
 	tree = tree_builder.top();
 	tree_builder.pop();
 
-	compress_tree(tree);
+//	compress_tree(tree);
 
 	short_hand(tree, 0, 0);
 
 }
 
 void compress::short_hand(huff_tree *in, unsigned int depth, unsigned int node) {
-	if (in->get_val() != -1) { opti[in->get_val()] = std::pair<int, int>(depth, node); }
+	if (in->get_val() != 0) { opti[in->get_val()] = std::pair<int, int>(node, depth); }
 
 	if (in->get_right() != nullptr) { short_hand(in->get_right(), ++depth, (node << 1) | 1); }
 	if (in->get_left() != nullptr) { short_hand(in->get_left(), depth, node << 1); }
@@ -88,7 +101,7 @@ bool compress::create_stream(const std::string &in_file) {
 	while (!in.eof()) {
 		char temp;
 		in.get(temp);
-		out_stream.add(opti[temp].first, opti[temp].second);
+		out_stream.add_char(opti[temp].first, opti[temp].second - 1);
 	}
 
 	in.close();
@@ -98,11 +111,11 @@ bool compress::create_stream(const std::string &in_file) {
 
 void compress::compress_tree(huff_tree *in) {
 
-	if (in->get_val() != -1) {
-		out_stream.add(1, 1);
-		out_stream.add(in->get_val(), cell_size);
+	if (in->get_val() != inside) {
+		out_stream.add_char(1, 1);
+		out_stream.add_char(in->get_val(), cell_size);
 	} else {
-		out_stream.add(0,1);
+		out_stream.add_char(0, 1);
 	}
 
 	if (in->get_right() != nullptr) { compress_tree(in->get_right()); }
