@@ -3,4 +3,4 @@ project(bonus)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(bonus main.cpp compressed_stream.cpp compressed_stream.h huff_tree.cpp huff_tree.h compress.cpp compress.h decompress.cpp decompress.h)
+add_executable(bonus src/main.cpp src/compressed_stream.cpp src/compressed_stream.h src/huff_tree.cpp src/huff_tree.h src/compress.cpp src/compress.h src/decompress.cpp src/decompress.h)
