@@ -38,7 +38,8 @@ void decompress::decompress_txt(const std::string &out_file) {
 	tree = rebuild_tree();
 
 	std::ofstream out_stream(out_file.c_str());
-	while (!in_stream.eof()) {
+	bool stop = false;
+	while (!stop && !in_stream.eof()) {
 		unsigned int cur;
 		char res;
 		huff_tree *cursor = tree;
@@ -49,7 +50,8 @@ void decompress::decompress_txt(const std::string &out_file) {
 				cursor = cursor->get_left();
 			}
 		}
-		out_stream.put(cursor->get_val());
+		stop = cursor->get_val() == 3;
+		if (!stop) { out_stream.put(cursor->get_val()); }
 	}
 	out_stream.close();
 	in_stream.close();

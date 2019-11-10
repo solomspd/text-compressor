@@ -24,7 +24,7 @@ class compare_pq // TODO replace with in class comparison
 compress::compress() {
 	for (int i = 0; i < char_count; i++) {
 		tally[i].first = 0;
-		tally[i].second = char(i);
+		tally[i].second = int(i);
 	}
 }
 compress::compress(const std::string &in_file) {
@@ -48,6 +48,8 @@ bool compress::set_up(const std::string &in_file) {
 		in.get(temp);
 		tally[int(temp)].first++;
 	}
+
+	tally[3].first++;
 
 	in.close();
 
@@ -101,8 +103,12 @@ bool compress::create_stream(const std::string &in_file) {
 	while (!in.eof()) {
 		char temp;
 		in.get(temp);
-		out_stream.add_char(opti[temp].first, opti[temp].second - 1);
+		if (!in.eof()) {
+			out_stream.add_char(opti[temp].first, opti[temp].second - 1);
+		}
 	}
+
+	out_stream.add_char(opti[int(3)].first, opti[int(3)].second - 1);
 
 	in.close();
 
