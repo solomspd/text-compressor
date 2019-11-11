@@ -20,17 +20,20 @@ class compress {
 		huff_tree *tree;
 		std::pair<unsigned long long, char> tally[char_count];
 		std::map<char, std::pair<int, int>> opti; //first int depth, second sequence;
+		double L;
 
 	public:
 		compress();
 		compress(const std::string &in_file);
 		~compress();
-		bool set_up(const std::string &in_file); // TODO consider finding frequency of more than just letters such as common suffixes "tion" and "er" and "aaaaaaaaaa"
+		bool set_up(const std::string &in_file);
 		void short_hand(huff_tree *in, unsigned int depth, unsigned int node);
-		void build_tree(); // TODO consider adding nodes for multiplications of characters for more effieicient recurring characters
+		void build_tree();
 		bool create_stream(const std::string &in_file);
-		void compress_tree(huff_tree *in); // TODO try to make constant and become reference
+		void compress_tree(huff_tree *in);
 		bool create_file(const std::string &in_file);
+		double get_ratio();
+		double get_eff();
 };
 
 #endif //BONUS_COMPRESS_H

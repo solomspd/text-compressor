@@ -14,7 +14,6 @@
 class decompress {
 	private:
 		huff_tree *tree;
-		std::map<unsigned int, char> opti;
 		std::ifstream in_stream;
 		char cur_char;
 		unsigned short pos;

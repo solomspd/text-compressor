@@ -17,45 +17,47 @@ const char decompress_sym = 'd';
 int main(int argc, char **argv) {
 	bool another_job = false;
 
-	std::string original = "test.txt";
 	do {
 		char mode_sym;
 
-		if (argc != 3 | another_job) {
+		std::string source, dest;
+
+		if ((argc != 4) | another_job) {
 			std::cout << "Enter operation to complete compress/decompressed" << std::endl << "[c/d]";
 			std::cin >> mode_sym;
-			std::cout << "Enter text file name (dont forget to include the .txt)" << std::endl;
-			std::cin >> original;
+			std::cout << "Enter source text file name (dont forget to include the .txt)" << std::endl;
+			std::cin >> source;
+			std::cout << "Enter destination text file name (dont forget to include the .txt)";
+			std::cin >> dest;
 		} else {
 			mode_sym = argv[1][1];
-			original = argv[2];
+			source = argv[2];
+			dest = argv[3];
 		}
 
 		mode_sym = tolower(mode_sym);
 
-		if (original.substr(original.length() - 4, 5) != ".txt") {
+		if (source.substr(source.length() - 4, 5) != ".txt" || dest.substr(dest.length() - 4, 5) != ".txt") {
 			std::cout << "Please enter a .txt file";
 			return invalid_file;
 		}
 
 		switch (mode_sym) {
 			case compress_sym: {
-				std::string compressed = "compressed_" + original;
 				compress compressor;
-				if (!compressor.set_up(original)) { return cannot_open_file; }
+				if (!compressor.set_up(source)) { return cannot_open_file; }
 				compressor.build_tree();
-				if (!compressor.create_stream(original)) { return cannot_open_file; }
-				if (!compressor.create_file(compressed)) { return cannot_create_file; }
-				std::cout << std::endl << "Done!";
+				if (!compressor.create_stream(source)) { return cannot_open_file; }
+				if (!compressor.create_file(dest)) { return cannot_create_file; }
+				std::cout << std::endl << "Compression ratio: " << compressor.get_ratio() << std::endl << "Efficiency: " << compressor.get_eff() << std::endl;
 				break;
 			}
 
 			case decompress_sym: {
-				std::string decompressed = "decompressed_" + original.substr(11, original.length() - 1);
 				decompress decompressor;
-				if (!decompressor.open_file(original)) { return cannot_open_file; }
-				decompressor.decompress_txt(decompressed);
-				std::cout << std::endl << "Done!" << std::endl << "Extracted to " << decompressed;
+				if (!decompressor.open_file(source)) { return cannot_open_file; }
+				decompressor.decompress_txt(dest);
+				std::cout << std::endl << "Done!" << std::endl << "Extracted to " << dest;
 				break;
 			}
 

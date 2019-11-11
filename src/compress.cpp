@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <queue>
 #include <functional>
+#include <cmath>
 
 #include "compress.h"
 
@@ -108,7 +109,7 @@ bool compress::create_stream(const std::string &in_file) {
 		}
 	}
 
-	out_stream.add_char(opti[int(3)].first, opti[int(3)].second - 1);
+	out_stream.add_char(opti[char(3)].first, opti[char(3)].second - 1);
 
 	in.close();
 
@@ -139,4 +140,23 @@ bool compress::create_file(const std::string &in_file) {
 	in.close();
 
 	return true;
+}
+
+double compress::get_ratio() {
+	double tot = tree->get_freq();
+	L = 0;
+	for (int i = 0; i < char_count && tally[i].first > 0; i++) {
+		L += (tally[i].first/tot) * opti[tally[i].second].second;
+	}
+	return (1-(L/8));
+}
+
+double compress::get_eff() {
+	double tot = tree->get_freq();
+	double eff = 0, H = 0;
+	for (int i = 0; i < char_count && tally[i].first > 0; i++) {
+		double prob = tally[i].first/tot;
+		H += (prob) * log2(prob);
+	}
+	return -H/L;
 }
