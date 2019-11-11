@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 			std::cin >> mode_sym;
 			std::cout << "Enter source text file name (dont forget to include the .txt)" << std::endl;
 			std::cin >> source;
-			std::cout << "Enter destination text file name (dont forget to include the .txt)";
+			std::cout << "Enter destination text file name (dont forget to include the .txt)" << std::endl;
 			std::cin >> dest;
 		} else {
 			mode_sym = argv[1][1];
